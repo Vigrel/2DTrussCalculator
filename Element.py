@@ -5,9 +5,9 @@ import numpy as np
 from Node import Node
 
 class Element():
-    def __init__(self, node1: Node(), node2: Node(), youngs_module: float, area: float) -> None:
-        self.node1: Node() = node1
-        self.node2: Node() = node2
+    def __init__(self, node1: Node, node2: Node, youngs_module: float, area: float) -> None:
+        self.node1: Node = node1
+        self.node2: Node = node2
         self.youngs_module: float = youngs_module
         self.area: float = area
 
@@ -18,7 +18,7 @@ class Element():
 
         self.element_stiffness: np.ndarray[List[float]] = self.calculate_element_stiffness
 
-    def calculate_element_stiffness(self) -> np.ndarray[List[float]]:
+    def calculate_element_stiffness(self) -> List[List[float]]:
         cos2 = self.cos**2
         sin2 = self.sin**2
         sico = self.cos*self.sin
