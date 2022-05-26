@@ -16,9 +16,9 @@ class Element():
         self.sin: float = (self.node2.y - self.node1.y) / self.distance
         self.cos: float = (self.node2.x - self.node1.x) / self.distance
 
-        self.element_stiffness: np.ndarray[List[float]] = self.calculate_element_stiffness
+        self.stiffness: np.ndarray[List[float]] = self.calculate_stiffness
 
-    def calculate_element_stiffness(self) -> List[List[float]]:
+    def calculate_stiffness(self) -> List[List[float]]:
         cos2 = self.cos**2
         sin2 = self.sin**2
         sico = self.cos*self.sin
