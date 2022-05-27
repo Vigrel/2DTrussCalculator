@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, NoReturn, Tuple
 
 import numpy as np
 
@@ -16,10 +16,15 @@ class Structure():
         self.N  : np.array[List[float]] = np.array(data[1])
         self.Inc: np.array[List[float]] = np.array(data[3])
         self.F  : np.array[List[float]] = np.array(data[5])
-        self.R  : np.array[List[float]] = np.array(data[7])
+        self.R  : np.array[List[int]] = np.array(data[7]).astype(int)
 
         self.elements_list: List[Element] = self.create_elements()
-        self.global_stiffness_matrix: None = self.create_global_stiffness_matrix()
+        self.global_stiffness_matrix: List[List[float]] = self.create_global_stiffness_matrix()
+        
+        data = self.apply_boundary_conditions(self)
+        self.constrained_forces: List[List[float]] = data[0]
+        self.constrained_stiffness: List[List[float]] = data[1]
+
 
     def create_elements(self) -> List[Element]:
         elements = []
@@ -43,7 +48,7 @@ class Structure():
             elements.append(Element(node1, node2, youngs_module, area))
         return elements
     
-    def create_global_stiffness_matrix(self) -> None:
+    def create_global_stiffness_matrix(self) -> List[List[float]]:
         base_matrix = np.zeros((self.nn*2, self.nn*2))
 
         for element in self.elements_list:
@@ -57,3 +62,15 @@ class Structure():
                         element.node2.dofx - 1 : element.node2.dofy] += element.stiffness[2:, 2:]
 
         return base_matrix
+
+    def apply_boundary_conditions(self) -> Tuple(List[List[float]], List[List[float]]):
+        constrained_forces = np.delete(self.F, self.R, 0)
+        constrained_stiffness = np.delete(self.global_stiffness_matrix, self.R, 0)
+        constrained_stiffness = np.delete(self.global_stiffness_matrix, self.R, 1)
+
+        return (constrained_forces, constrained_stiffness)
+
+    def get_displacement(self):
+        pass
+
+print(Structure("entrada.xlsx").apply_boundary_conditions())
