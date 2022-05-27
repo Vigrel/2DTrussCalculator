@@ -16,12 +16,12 @@ class Element():
         self.stiffness: np.ndarray[List[float]] = self.calculate_stiffness()
 
     def calculate_stiffness(self) -> List[List[float]]:
-        sin = (self.node2.y - self.node1.y) / self.distance
-        cos = (self.node2.x - self.node1.x) / self.distance
+        self.sin = (self.node2.y - self.node1.y) / self.distance
+        self.cos = (self.node2.x - self.node1.x) / self.distance
 
-        cos2 = cos**2
-        sin2 = sin**2
-        sico = cos*sin
+        cos2 = self.cos**2
+        sin2 = self.sin**2
+        sico = self.cos*self.sin
 
         matriz = np.array([
             [ cos2, sico , -cos2, -sico],
