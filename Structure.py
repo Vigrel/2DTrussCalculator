@@ -27,6 +27,8 @@ class Structure():
         self.displacement: List[float] = self.get_displacement()
         self.support_reactions: List[float] = self.get_support_reactions()
         self.deformation: List[float] = self.get_deformation()
+        self.truss: List[float] = self.get_truss()
+        self.internal_forces: List[float] = self.get_internal_forces()
 
     def create_elements(self) -> List[Element]:
         elements = []
@@ -98,3 +100,9 @@ class Structure():
                             )
 
         return deformations
+
+    def get_truss(self) -> List[float]:
+        return [self.elements_list[element].youngs_module * self.deformation[element] for element in range(self.nm)]
+
+    def get_internal_forces(self) -> List[float]:
+        return [self.elements_list[element].area * self.truss[element] for element in range(self.nm)]
