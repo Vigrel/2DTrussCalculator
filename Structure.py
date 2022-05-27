@@ -21,11 +21,11 @@ class Structure():
         self.elements_list: List[Element] = self.create_elements()
         self.global_stiffness_matrix: List[List[float]] = self.create_global_stiffness_matrix()
         
-        data = self.apply_boundary_conditions(self)
+        data = self.apply_boundary_conditions()
         self.constrained_forces: List[List[float]] = data[0]
         self.constrained_stiffness: List[List[float]] = data[1]
-
-
+        self.displacement: List[float] = self.get_displacement()
+        
     def create_elements(self) -> List[Element]:
         elements = []
 
@@ -63,14 +63,20 @@ class Structure():
 
         return base_matrix
 
-    def apply_boundary_conditions(self) -> Tuple(List[List[float]], List[List[float]]):
+    def apply_boundary_conditions(self) -> tuple[List[List[float]], List[List[float]]]:
         constrained_forces = np.delete(self.F, self.R, 0)
         constrained_stiffness = np.delete(self.global_stiffness_matrix, self.R, 0)
-        constrained_stiffness = np.delete(self.global_stiffness_matrix, self.R, 1)
+        constrained_stiffness = np.delete(constrained_stiffness, self.R, 1)
 
         return (constrained_forces, constrained_stiffness)
 
-    def get_displacement(self):
-        pass
+    def get_displacement(self) -> List[float]:
+        displacement = np.zeros(6)
+        counter = 0
 
-print(Structure("entrada.xlsx").apply_boundary_conditions())
+        for i in range(len(displacement)):
+            if i not in self.R.flatten():
+                displacement[i] = np.linalg.solve(self.constrained_stiffness, self.constrained_forces).flatten()[counter]
+                counter+=1
+
+        return displacement
