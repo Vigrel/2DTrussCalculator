@@ -83,7 +83,7 @@ class Structure():
         return displacement
     
     def get_support_reactions(self) -> List[float]:
-        return np.dot(self.global_stiffness_matrix, self.displacement)
+        return np.dot(self.global_stiffness_matrix, self.displacement)[self.R]
 
 entrada = Structure("entrada.xlsx")
 
