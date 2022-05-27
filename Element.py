@@ -21,7 +21,7 @@ class Element():
 
         cos2 = cos**2
         sin2 = sin**2
-        sico = cos*self
+        sico = cos*sin
 
         matriz = np.array([
             [ cos2, sico , -cos2, -sico],
