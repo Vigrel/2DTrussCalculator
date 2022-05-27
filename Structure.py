@@ -25,6 +25,7 @@ class Structure():
         self.constrained_forces: List[List[float]] = data[0]
         self.constrained_stiffness: List[List[float]] = data[1]
         self.displacement: List[float] = self.get_displacement()
+        self.support_reactions: List[float] = self.get_support_reactions()
         
     def create_elements(self) -> List[Element]:
         elements = []
@@ -80,3 +81,10 @@ class Structure():
                 counter+=1
 
         return displacement
+    
+    def get_support_reactions(self) -> List[float]:
+        return np.dot(self.global_stiffness_matrix, self.displacement)
+
+entrada = Structure("entrada.xlsx")
+
+print(entrada.support_reactions)
