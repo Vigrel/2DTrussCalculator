@@ -14,24 +14,22 @@ class Structure:
         self.nm: int = data[2]
         self.nc: int = data[4]
         self.nr: int = data[6]
-        self.N: np.array[List[float]] = np.array(data[1])
-        self.Inc: np.array[List[float]] = np.array(data[3])
-        self.F: np.array[List[float]] = np.array(data[5])
-        self.R: np.array[List[int]] = np.array(data[7]).astype(int)
+        self.N: np.array = np.array(data[1])
+        self.Inc: np.array = np.array(data[3])
+        self.F: np.array = np.array(data[5])
+        self.R: np.array = np.array(data[7]).astype(int)
 
         self.elements_list: List[Element] = self.create_elements()
-        self.global_stiffness_matrix: List[
-            List[float]
-        ] = self.create_global_stiffness_matrix()
+        self.global_stiffness_matrix: np.array = self.create_global_stiffness_matrix()
 
         data = self.apply_boundary_conditions()
-        self.constrained_forces: List[List[float]] = data[0]
-        self.constrained_stiffness: List[List[float]] = data[1]
-        self.displacement: List[float] = self.get_displacement()
-        self.support_reactions: List[float] = self.get_support_reactions()
-        self.deformation: List[float] = self.get_deformation()
-        self.truss: List[float] = self.get_truss()
-        self.internal_forces: List[float] = self.get_internal_forces()
+        self.constrained_forces: np.array = data[0]
+        self.constrained_stiffness: np.array = data[1]
+        self.displacement: np.array = self.get_displacement()
+        self.support_reactions: np.array = self.get_support_reactions()
+        self.deformation: np.array = self.get_deformation()
+        self.truss: np.array = self.get_truss()
+        self.internal_forces: np.array = self.get_internal_forces()
 
     def create_elements(self) -> List[Element]:
         elements = []
@@ -53,7 +51,7 @@ class Structure:
             elements.append(Element(node1, node2, youngs_module, area))
         return elements
 
-    def create_global_stiffness_matrix(self) -> List[List[float]]:
+    def create_global_stiffness_matrix(self) -> np.array:
         base_matrix = np.zeros((self.nn * 2, self.nn * 2))
 
         for element in self.elements_list:
@@ -76,14 +74,14 @@ class Structure:
 
         return base_matrix
 
-    def apply_boundary_conditions(self) -> tuple[List[List[float]], List[List[float]]]:
+    def apply_boundary_conditions(self) -> tuple[np.array, np.array]:
         constrained_forces = np.delete(self.F, self.R, 0)
         constrained_stiffness = np.delete(self.global_stiffness_matrix, self.R, 0)
         constrained_stiffness = np.delete(constrained_stiffness, self.R, 1)
 
         return (constrained_forces, constrained_stiffness)
 
-    def get_displacement(self) -> List[float]:
+    def get_displacement(self) -> np.array:
         counter = 0
         displacement = np.linalg.solve(
             self.constrained_stiffness, self.constrained_forces
@@ -97,10 +95,10 @@ class Structure:
 
         return complete_displacement
 
-    def get_support_reactions(self) -> List[float]:
+    def get_support_reactions(self) -> np.array:
         return np.dot(self.global_stiffness_matrix, self.displacement)[self.R]
 
-    def get_deformation(self) -> List[float]:
+    def get_deformation(self) -> np.array:
         deformations = []
 
         for element in self.elements_list:
@@ -122,13 +120,13 @@ class Structure:
 
         return deformations
 
-    def get_truss(self) -> List[float]:
+    def get_truss(self) -> np.array:
         return [
             self.elements_list[element].youngs_module * self.deformation[element]
             for element in range(self.nm)
         ]
 
-    def get_internal_forces(self) -> List[float]:
+    def get_internal_forces(self) -> np.array:
         return [
             self.elements_list[element].area * self.truss[element]
             for element in range(self.nm)

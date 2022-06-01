@@ -22,7 +22,7 @@ class Element:
         Cross-sectional area of the truss
     self.distance : float
         Distance between the two nodes of the truss
-    stiffness : np.ndarray[List[float]]
+    stiffness : np.array
         Stiffness array of the truss
     sin : float
         Sin of the angle between the truss and the x-axis
@@ -62,15 +62,15 @@ class Element:
             (self.node2.x - self.node1.x) ** 2 + (self.node2.y - self.node1.y) ** 2
         ) ** 0.5
 
-        self.stiffness: np.ndarray[List[float]] = self.calculate_stiffness()
+        self.stiffness: np.array = self.calculate_stiffness()
 
-    def calculate_stiffness(self) -> List[List[float]]:
+    def calculate_stiffness(self) -> np.array:
         """
         Calculates the stiffness matrix of the truss element.
 
         Returns
         -------
-        stiffness : np.ndarray[List[float]]
+        stiffness : np.array
             Stiffness array of the truss element
         """
 
