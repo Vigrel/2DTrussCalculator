@@ -36,7 +36,7 @@ class Structure:
     def create_elements(self) -> List[Element]:
         elements = []
 
-        for i in range(self.nn):
+        for i in range(self.nm):
             ix_n1 = int(self.Inc[i][0])
             node1 = Node(
                 self.N[0][ix_n1 - 1], self.N[1][ix_n1 - 1], ix_n1 * 2 - 1, ix_n1 * 2
@@ -62,12 +62,12 @@ class Structure:
                 element.node1.dofx - 1 : element.node1.dofy,
             ] += element.stiffness[:2, :2]
             base_matrix[
-                element.node1.dofx - 1 : element.node1.dofy,
                 element.node2.dofx - 1 : element.node2.dofy,
+                element.node1.dofx - 1 : element.node1.dofy,
             ] += element.stiffness[2:, :2]
             base_matrix[
-                element.node2.dofx - 1 : element.node2.dofy,
                 element.node1.dofx - 1 : element.node1.dofy,
+                element.node2.dofx - 1 : element.node2.dofy,
             ] += element.stiffness[:2, 2:]
             base_matrix[
                 element.node2.dofx - 1 : element.node2.dofy,
@@ -84,17 +84,18 @@ class Structure:
         return (constrained_forces, constrained_stiffness)
 
     def get_displacement(self) -> List[float]:
-        displacement = np.zeros(6)
         counter = 0
+        displacement = np.linalg.solve(
+            self.constrained_stiffness, self.constrained_forces
+        )
+        complete_displacement = np.zeros(self.nn*2)
 
-        for i in range(len(displacement)):
+        for i in range(len(complete_displacement)):
             if i not in self.R.flatten():
-                displacement[i] = np.linalg.solve(
-                    self.constrained_stiffness, self.constrained_forces
-                ).flatten()[counter]
-                counter += 1
+                complete_displacement[i] = displacement[counter]
+                counter+=1
 
-        return displacement
+        return complete_displacement
 
     def get_support_reactions(self) -> List[float]:
         return np.dot(self.global_stiffness_matrix, self.displacement)[self.R]
