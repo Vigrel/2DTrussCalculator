@@ -7,32 +7,33 @@ from Node import Node
 
 class Element:
     """
-    A class to represent an Element. In this case, an Element is a planar truss.
+    A class to represent an element. In this case, an Element is a member of a planar truss.
+    Each Element object has two connection points, represented by Node objects.
     ...
 
     Attributes
     ----------
     node1 : Node
-        First node of the truss
+        First node of the element
     node2 : Node
-        Second node of the truss
+        Second node of the element
     youngs_module : float
-        Young's module of the truss material
+        Young's module of the element material
     area : float
-        Cross-sectional area of the truss
+        Cross-sectional area of the element
     self.distance : float
-        Distance between the two nodes of the truss
+        Distance between the two nodes of the element
     stiffness : np.array
-        Stiffness array of the truss
+        Stiffness array of the element
     sin : float
-        Sin of the angle between the truss and the x-axis
+        Sin of the angle between the element and the x-axis
     cos : float
-        Cos of the angle between the truss and the x-axis
+        Cos of the angle between the element and the x-axis
 
     Methods
     -------
     calculate_stiffness():
-        Calculates the stiffness matrix of the truss element
+        Calculates the stiffness matrix of the element
     """
 
     def __init__(
@@ -44,13 +45,13 @@ class Element:
         Parameters
         ----------
         node1 : Node
-            First node of the truss
+            First node of the element
         node2 : Node
-            Second node of the truss
+            Second node of the element
         youngs_module : float
-            Young's module of the truss material
+            Young's module of the element material
         area : float
-            Cross-sectional area of the truss
+            Cross-sectional area of the element
         """
 
         self.node1: Node = node1
@@ -66,12 +67,12 @@ class Element:
 
     def calculate_stiffness(self) -> np.array:
         """
-        Calculates the stiffness matrix of the truss element.
+        Calculates the stiffness matrix of the element.
 
         Returns
         -------
         stiffness : np.array
-            Stiffness array of the truss element
+            Stiffness array of the element
         """
 
         self.sin = (self.node2.y - self.node1.y) / self.distance

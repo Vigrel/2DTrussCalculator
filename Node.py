@@ -1,6 +1,7 @@
 class Node:
     """
-    A class to represent a Node. In this case, Node is a point on a 2D plane.
+    A class to represent a Node. In this case, Node is a point on a 2D plane, 
+    which connects Element objects.
     ...
 
     Attributes
