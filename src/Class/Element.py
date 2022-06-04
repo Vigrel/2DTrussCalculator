@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-from Node import Node
+from Class.Node import Node
 
 
 class Element:

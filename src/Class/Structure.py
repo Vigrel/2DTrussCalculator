@@ -2,21 +2,21 @@ from typing import List
 
 import numpy as np
 
-import funcoesTermosol
-from Element import Element
-from Node import Node
+import funcoesTermosol as funcoesTermosol
+from Class.Element import Element
+from Class.Node import Node
 
 
 class Structure:
     """
-    A class to represent a truss in which all the members lie in a 
-    2D plane (planar truss). In this case, a Structure is an arrangement 
+    A class to represent a truss in which all the members lie in a
+    2D plane (planar truss). In this case, a Structure is an arrangement
     of Element objects connected by Node objects.
     ...
 
     Attributes
     ----------
-    self.nn : int 
+    self.nn : int
         Number of nodes
     self.nm : int
         Number of members
@@ -36,10 +36,10 @@ class Structure:
         List of Element objects that compose the Structure object
     self.global_stiffness_matrix : np.array
         Global stiffness matrix of the Structure object
-    self.constrained_forces : np.array 
+    self.constrained_forces : np.array
         Global vector of forces
     self.constrained_stiffness : np.array
-        Global stiffness matrix of the Structure object 
+        Global stiffness matrix of the Structure object
         after applying boundary conditions
     self.displacement : np.array
         Nodal displacement vector
@@ -55,7 +55,7 @@ class Structure:
     Methods
     -------
     create_elements():
-        Generates the Element objects that compose the Structure, 
+        Generates the Element objects that compose the Structure,
         based on the position of the nodes
     create_global_stiffness_matrix():
         Generates the Global stiffness matrix of the Structure object
@@ -107,7 +107,7 @@ class Structure:
 
     def create_elements(self) -> List[Element]:
         """
-        Generates the Element objects that compose the Structure, 
+        Generates the Element objects that compose the Structure,
         based on the position of the nodes
 
         Returns
@@ -173,10 +173,10 @@ class Structure:
 
         Returns
         -------
-        constrained_forces : np.array 
+        constrained_forces : np.array
             Global vector of forces
         constrained_stiffness : np.array
-            Global stiffness matrix of the Structure object after applying 
+            Global stiffness matrix of the Structure object after applying
             boundary conditions
         """
         constrained_forces = np.delete(self.F, self.R, 0)
@@ -194,17 +194,17 @@ class Structure:
         displacement : np.array
             Nodal displacement vector
         """
-        
+
         counter = 0
         displacement = np.linalg.solve(
             self.constrained_stiffness, self.constrained_forces
         )
-        complete_displacement = np.zeros(self.nn*2)
+        complete_displacement = np.zeros(self.nn * 2)
 
         for i in range(len(complete_displacement)):
             if i not in self.R.flatten():
                 complete_displacement[i] = displacement[counter]
-                counter+=1
+                counter += 1
 
         return complete_displacement
 

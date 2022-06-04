@@ -1,5 +1,5 @@
-from Structure import Structure
-import funcoesTermosol
+from Class.Structure import Structure
+import funcoesTermosol as funcoesTermosol
 import argparse
 
 if __name__ == "__main__":
