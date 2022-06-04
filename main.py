@@ -15,5 +15,5 @@ if __name__ == "__main__":
         structure.displacement,
         structure.deformation,
         structure.internal_forces,
-        structure.truss,
+        structure.tensile_forces,
     )
